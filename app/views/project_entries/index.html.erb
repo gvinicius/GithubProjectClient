@@ -1,0 +1,11 @@
+<%= form_tag search_project_entries_path, id: 'myform', method: :get, remote: true, :html => {:'data-type' => 'json'} do %>
+ <%= text_field_tag 'term', params[:term], placeholder: "Enter project_entry name" %>
+ <%= submit_tag 'Search!' %>
+<% end %>
+<script>
+function addProjectEntry () {
+  console.log(1)
+}
+
+$('#myform').on ('ajax:success', addProjectEntry)
+</script>
