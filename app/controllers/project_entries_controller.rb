@@ -5,7 +5,7 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries
   # GET /project_entries.json
   def index
-    @project_entries = ProjectEntry.all
+    @project_entries = ProjectEntry.all.group(:language)
   end
 
   # GET /project_entries/1
@@ -16,17 +16,26 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries/1
   # GET /project_entries/1.json
   def search
-    language = params[:term]
-
-    results = {}
-    source = "https://api.github.com/search/repositories?q=language:#{language}&sort=stars&order=desc"
-    resp = Net::HTTP.get_response(URI.parse(source))
-    if resp.code == '200'
-      results = JSON.parse(resp.body)
-    end
     respond_to do |format|
-      format.json { render json: results, status: '200' }
+    language = params[:term]
+    results = {}
+    source = "https://api.github.com/search/repositories?q=language:#{language}&sort=stars&order=desc&page=1"
+    response = Net::HTTP.get_response(URI.parse(source))
+    if response.code == '200'
+      results = JSON.parse(response.body)['items'][0,5].map do |element|
+            result = ProjectEntry.where(name: result.name)&.first
+            result = ProjectEntry.new(element.slice('name', 'language', 'url', 'score')) if result.present?
+            result.save
+            result
+      end
     end
+      format.json { render json: {language: language, results: results}, status: response.code }
+    end
+  end
+
+  # GET /project_entries/1/edit
+  def clear_all
+    ProjectEntry.destroy_all
   end
 
   # GET /project_entries/new

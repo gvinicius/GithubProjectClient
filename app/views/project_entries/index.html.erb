@@ -1,12 +1,26 @@
+<h1>Github project searcher</h1>
 <%= form_tag search_project_entries_path, id: 'myform', method: :get, remote: true, :html => {:'data-type' => 'json'} do %>
  <%= text_field_tag 'term', params[:term], placeholder: "Enter project_entry name" %>
  <%= submit_tag 'Search!' %>
 <% end %>
+<%= form_tag clear_all_project_entries_path, id: 'myform', method: :get, remote: true, :html => {:'data-type' => 'json'} do %>
+ <%= submit_tag 'Clear saved projects' %>
+<% end %>
+<h2>Results: </h2>
+<span id='about-search'> </span>
+<%=  %>
+
 <script>
 function addProjectEntry (event, data) {
   console.log(1)
   console.log(data)
 }
 
+function errorProjectEntry (event, data) {
+debugger
+  $('#about-search').text('No matches found for' + data.responseJSON.language + ' or server unavailable')
+}
+
 $('#myform').on ('ajax:success', addProjectEntry)
+$('#myform').on ('ajax:error', errorProjectEntry)
 </script>
