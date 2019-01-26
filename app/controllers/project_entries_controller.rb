@@ -1,4 +1,5 @@
 class ProjectEntriesController < ApplicationController
+  require 'net/http'
   before_action :set_project_entry, only: [:show, :edit, :update, :destroy]
 
   # GET /project_entries
@@ -15,8 +16,16 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries/1
   # GET /project_entries/1.json
   def search
+    language = params[:term]
+
+    results = {}
+    source = "https://api.github.com/search/repositories?q=language:#{language}&sort=stars&order=desc"
+    resp = Net::HTTP.get_response(URI.parse(source))
+    if resp.code == '200'
+      results = JSON.parse(resp.body)
+    end
     respond_to do |format|
-      format.json { render json: '1', status: '200' }
+      format.json { render json: results, status: '200' }
     end
   end
 
