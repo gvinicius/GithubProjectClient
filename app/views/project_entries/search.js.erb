@@ -1,3 +1,4 @@
 <% if @error.blank? %>
   $("<%= escape_javascript(render 'entry') %>").appendTo("#language-reference");
+  searchResult();
 <% end %>
