@@ -1,4 +1,4 @@
-<% entries = @project_entries.values.first if entries.nil? %>
+<% entries = @project_entries.values.first %>
 <% entries.each_with_index do |project_entry, index| %>
   <tr id='<%= project_entry.language + '-' + index.to_s %>'<>
     <td><%= project_entry.language %></td>

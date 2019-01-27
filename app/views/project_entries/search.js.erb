@@ -1,3 +1,3 @@
 <% if @error.blank? %>
-  $("<%= escape_javascript(render 'entry', locals: { language: @project_entries.keys.first, entries: @project_entries.values} ) %>").appendTo("#language-reference");
+  $("<%= escape_javascript(render 'entry') %>").appendTo("#language-reference");
 <% end %>

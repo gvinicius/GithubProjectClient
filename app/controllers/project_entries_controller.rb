@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 class ProjectEntriesController < ApplicationController
   require 'net/http'
-  skip_before_action :verify_authenticity_token
-  protect_from_forgery except: :search
-  before_action :set_project_entry, only: [:show, :edit, :update, :destroy]
+  before_action :set_project_entry, only: %i[show edit update destroy]
 
   # GET /project_entries
   # GET /project_entries.json
@@ -12,33 +12,19 @@ class ProjectEntriesController < ApplicationController
 
   # GET /project_entries/1
   # GET /project_entries/1.json
-  def show
-  end
+  def show; end
 
   # GET /project_entries/1
   # GET /project_entries/1.json
-  def search(language=params[:term])
+  def search
     respond_to do |format|
-      @language = language
-      results = {}
-      source = "https://api.github.com/search/repositories?q=language:#{@language}&sort=stars&order=desc&page=1&per_page=5"
-      response = Net::HTTP.get_response(URI.parse(source))
-      new_language = ProjectEntry.where(name: @language.downcase.capitalize).empty?
-      if response.code == '200' && new_language
-        @project_entries = {@language => JSON.parse(response.body)['items'].map do |element|
-              result = ProjectEntry.where(name: element['name'])&.first
-              info_field = {info: element.except('name', 'language', 'url', 'score').to_json}
-              result = ProjectEntry.create(element.slice('name', 'language', 'url', 'score').merge(info_field)) if result.nil?
-              result.save
-              result
-        end}
-        format.js{'index'}
-      elsif response.code == '200' && !new_language
-        @error = true
-        format.js { render :js => "alertOld('#{@language}');" }
+      language = params[:language]
+      @project_entries = {language: prepare_entries(language)}
+      if @project_entries[language].present?
+        format.js
       else
         @error = true
-        format.js { render :js => "errorHandling('#{@language}');" }
+        format.js { render js: 'errorHandling();' }
       end
     end
   end
@@ -46,9 +32,12 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries/1
   # GET /project_entries/1.json
   def default_search
-      languages = %i[ruby python javascript clojure go]
-      results = {}
-      languages.each{ |language| search(language) }
+    languages = ['ruby', 'python', 'javascript', 'clojure', 'go']
+    @project_entries = {}
+    languages.each { |language|  @project_entries[language] = prepare_entries(language) }
+    respond_to do |format|
+      format.js { render file: 'project_entries/search.js.erb' }
+    end
   end
 
   def clear_all
@@ -64,8 +53,7 @@ class ProjectEntriesController < ApplicationController
   end
 
   # GET /project_entries/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /project_entries
   # POST /project_entries.json
@@ -108,13 +96,25 @@ class ProjectEntriesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_project_entry
-      @project_entry = ProjectEntry.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def project_entry_params
-      params.permit(:term)
+  def prepare_entries(language)
+    results = {}
+    source = "https://api.github.com/search/repositories?q=language:#{language}&sort=stars&order=desc&page=1&per_page=5"
+    response = Net::HTTP.get_response(URI.parse(source))
+    new_language = ProjectEntry.where(name: language.downcase.capitalize).empty?
+    if response.code == '200' && new_language
+      entries = JSON.parse(response.body)['items'].map { |element| ProjectEntry.upsert_from_github(element) }
+      return entries
     end
+  end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_project_entry
+    @project_entry = ProjectEntry.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def project_entry_params
+    params.permit(:term)
+  end
 end

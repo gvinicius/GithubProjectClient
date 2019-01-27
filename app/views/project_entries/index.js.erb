@@ -1,3 +1,7 @@
-<% if @error.blank? %>
-  $("<%= escape_javascript(render 'entry', locals: { language: @project_entries.keys.first, entries: @project_entries.values} ) %>").appendTo("#language-reference");
-<% end %>
+function errorHandling() {
+  $('#about-search').text('No more matches to show for this search or server unavailable')
+}
+
+function alertWait() {
+  $('#about-search').text('Wait a second. Processing...')
+}

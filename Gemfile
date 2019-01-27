@@ -1,5 +1,6 @@
-source 'https://rubygems.org'
+# frozen_string_literal: true
 
+source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.10'
@@ -42,10 +43,11 @@ group :development do
   gem 'web-console', '~> 2.0'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
   gem 'byebug'
+  gem 'spring'
 end
 
 gem 'github_api'
-gem "json_on_rails", "~> 0.2.0"
+gem 'json_on_rails', '~> 0.2.0'
 gem 'rack-cors', require: 'rack/cors'
+gem 'rubocop', require: false
