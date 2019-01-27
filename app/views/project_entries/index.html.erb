@@ -1,11 +1,11 @@
-<h1>Github project searcher</h1>
-<%= form_tag({action: 'default_search', format: :js }, { remote: true, method: :get, id: 'default-search-form', onSubmit: 'alertWait()' }) do %>
+<h1>Github project client</h1>
+<%= form_tag({action: 'default_search'}, { remote: false, method: :get, id: 'default-search-form', onSubmit: 'alertWait()' }) do %>
  <%= submit_tag 'Basic setup with Ruby, Python, Javascript, Clojure and Go repositories' %>
 <% end %>
 <br>
 <%= form_tag({action: 'search', format: :js }, { remote: true, method: :get, id: 'my-form', onSubmit: 'alertWait()'}) do %>
- <%= text_field_tag 'term', params[:term], placeholder: "Enter language to populate database" %>
- <%= submit_tag 'Search!' %>
+ <%= text_field_tag 'term', params[:term], placeholder: "Enter a language, get projects" %>
+ <%= submit_tag 'Search and populate!' %>
 <% end %>
 <br>
 <%= form_tag({action: 'clear_all', format: :js }, { remote: true, method: :delete, id: 'delete-form', onSubmit: 'alertWait()' }) do %>
@@ -25,10 +25,8 @@
   </thead>
 
   <tbody>
-    <% if @project_entries.any? && @project_entries.keys.any? %>
-        <% @project_entries.map do |language, entries| %>
-          <%= render partial: 'entry' %>
-      <% end %>
+    <% if @project_entries.present?  %>
+      <%= render partial: 'entry' %>
     <% end %>
   </tbody>
   <tbody id="language-reference">

@@ -1,24 +1,18 @@
-# README
+# GitHubProjectClient
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a simple Ruby app to fetch github projects by language and store it. Link: [GitHubProjectClient](https://githubprojectclient.herokuapp.com/)
 
-Things you may want to cover:
+* Ruby 2.3.1
+* Rails 4.2.1
+* MySQL 5.8.1
+* Minitest
+* Recommend using docker for MySQL in development
 
-* Ruby version
+## Running tests Locally
+```
+rake db:create db:migrate RAILS_ENV=test
+```
+```
+rake test
+```
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

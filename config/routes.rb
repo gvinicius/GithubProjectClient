@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   resources :project_entries do
     collection do
-      get :search, defaults: { format: :js }
+      get :search
       get :default_search, defaults: { format: :js }
       delete :clear_all, defaults: { format: :js }
     end

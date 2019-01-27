@@ -7,7 +7,7 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries
   # GET /project_entries.json
   def index
-    @project_entries = ProjectEntry.all.group_by(&:name)
+    @project_entries = ProjectEntry.all.order(:language)
   end
 
   # GET /project_entries/1
@@ -18,9 +18,8 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries/1.json
   def search
     respond_to do |format|
-      language = params[:language]
-      @project_entries = {language: prepare_entries(language)}
-      if @project_entries[language].present?
+      @project_entries = prepare_entries(params[:term])
+      if @project_entries.present?
         format.js
       else
         @error = true
@@ -33,11 +32,9 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries/1.json
   def default_search
     languages = ['ruby', 'python', 'javascript', 'clojure', 'go']
-    @project_entries = {}
-    languages.each { |language|  @project_entries[language] = prepare_entries(language) }
-    respond_to do |format|
-      format.js { render file: 'project_entries/search.js.erb' }
-    end
+    results = []
+    @project_entries = languages.map { |language|  results << prepare_entries(language) }.flatten.compact
+    redirect_to  project_entries_index_path
   end
 
   def clear_all
