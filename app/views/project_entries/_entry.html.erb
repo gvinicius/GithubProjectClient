@@ -1,0 +1,8 @@
+<% entries = @project_entries.values.first if entries.nil? %>
+<% entries.each_with_index do |project_entry, index| %>
+  <tr id='<%= project_entry.language + '-' + index.to_s %>'<>
+    <td><%= project_entry.language %></td>
+    <td><a href="<%= project_entry.url %>"><%= project_entry.name %></a></td>
+    <td><%= project_entry.score %></td>
+  </tr>
+<% end %>

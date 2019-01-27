@@ -1,26 +1,34 @@
 <h1>Github project searcher</h1>
-<%= form_tag search_project_entries_path, id: 'myform', method: :get, remote: true, :html => {:'data-type' => 'json'} do %>
+<%= form_tag({action: 'search', format: :js }, { remote: true, method: :get, id: 'my-form' }) do %>
  <%= text_field_tag 'term', params[:term], placeholder: "Enter project_entry name" %>
  <%= submit_tag 'Search!' %>
 <% end %>
-<%= form_tag clear_all_project_entries_path, id: 'myform', method: :get, remote: true, :html => {:'data-type' => 'json'} do %>
+<%= form_tag({action: 'clear_all', format: :js }, { remote: true, method: :delete, id: 'delete-form' }) do %>
  <%= submit_tag 'Clear saved projects' %>
 <% end %>
 <h2>Results: </h2>
 <span id='about-search'> </span>
-<%=  %>
+<table>
+  <thead>
+    <tr>
+      <th>Language</th>
+      <th>Project</th>
+      <th>Popularity Score</th>
+    </tr>
+  </thead>
 
+  <tbody>
+    <% if @project_entries.any? && @project_entries.keys.any? %>
+        <% @project_entries.map do |language, entries| %>
+          <%= render partial: 'entry', locals: { language: language, entries: entries} %>
+      <% end %>
+    <% end %>
+  </tbody>
+  <tbody id="language-reference">
+  </tbody>
+</table>
 <script>
-function addProjectEntry (event, data) {
-  console.log(1)
-  console.log(data)
+function errorHandling(language){
+  $('#about-search').text('No matches found for "' + language + '" or server unavailable')
 }
-
-function errorProjectEntry (event, data) {
-debugger
-  $('#about-search').text('No matches found for' + data.responseJSON.language + ' or server unavailable')
-}
-
-$('#myform').on ('ajax:success', addProjectEntry)
-$('#myform').on ('ajax:error', errorProjectEntry)
 </script>

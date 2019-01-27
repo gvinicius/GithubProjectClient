@@ -5,7 +5,7 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries
   # GET /project_entries.json
   def index
-    @project_entries = ProjectEntry.all.group(:language)
+    @project_entries = ProjectEntry.all.group_by(&:name)
   end
 
   # GET /project_entries/1
@@ -17,25 +17,30 @@ class ProjectEntriesController < ApplicationController
   # GET /project_entries/1.json
   def search
     respond_to do |format|
-    language = params[:term]
-    results = {}
-    source = "https://api.github.com/search/repositories?q=language:#{language}&sort=stars&order=desc&page=1"
-    response = Net::HTTP.get_response(URI.parse(source))
-    if response.code == '200'
-      results = JSON.parse(response.body)['items'][0,5].map do |element|
-            result = ProjectEntry.where(name: result.name)&.first
-            result = ProjectEntry.new(element.slice('name', 'language', 'url', 'score')) if result.present?
-            result.save
-            result
+      @language = params[:term]
+      results = {}
+      source = "https://api.github.com/search/repositories?q=language:#{@language}&sort=stars&order=desc&page=1"
+      response = Net::HTTP.get_response(URI.parse(source))
+      if response.code == '200'
+        @project_entries = {@language => JSON.parse(response.body)['items'][0,5].map do |element|
+              result = ProjectEntry.where(name: element['name'])&.first
+              result = ProjectEntry.create(element.slice('name', 'language', 'url', 'score')) if result.nil?
+              result.save
+              result
+        end}
+        format.js{}
+      else
+        @error = true
+        format.js { render :js => "errorHandling('#{@language}');" }
       end
-    end
-      format.json { render json: {language: language, results: results}, status: response.code }
     end
   end
 
-  # GET /project_entries/1/edit
   def clear_all
-    ProjectEntry.destroy_all
+    respond_to do |format|
+      ProjectEntry.destroy_all
+      format.js
+    end
   end
 
   # GET /project_entries/new

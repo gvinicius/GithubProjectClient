@@ -1,0 +1,5 @@
+<% if @error.blank? %>
+  $("<%= escape_javascript(render 'entry', locals: { language: @project_entries.keys.first, entries: @project_entries.values} ) %>").appendTo("#language-reference");
+<% else %>
+  $("<%= escape_javascript('<p> No matches found for' + @language + ' or server unavailable</p>') %>").appendTo("#about-search");
+<% end %>
