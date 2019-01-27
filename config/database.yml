@@ -1,5 +1,5 @@
 default: &default
-  adapter: mysql2
+  adapter: mysql2_json
   pool: 5
   encoding: utf8
   timeout: 5000

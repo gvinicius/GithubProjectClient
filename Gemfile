@@ -47,3 +47,5 @@ group :development do
 end
 
 gem 'github_api'
+gem "json_on_rails", "~> 0.2.0"
+gem 'rack-cors', require: 'rack/cors'

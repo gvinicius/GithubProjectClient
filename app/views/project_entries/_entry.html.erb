@@ -4,5 +4,6 @@
     <td><%= project_entry.language %></td>
     <td><a href="<%= project_entry.url %>"><%= project_entry.name %></a></td>
     <td><%= project_entry.score %></td>
+    <td><a href="<%= url_for project_entry_path(project_entry.id) %>">+ </td>
   </tr>
 <% end %>

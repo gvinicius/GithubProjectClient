@@ -1,13 +1,10 @@
 <p id="notice"><%= notice %></p>
 
+<%= link_to 'Back', project_entries_path %>
+
 <p>
   <strong>Name:</strong>
   <%= @project_entry.name %>
-</p>
-
-<p>
-  <strong>Link:</strong>
-  <%= @project_entry.link %>
 </p>
 
 <p>
@@ -15,5 +12,15 @@
   <%= @project_entry.language %>
 </p>
 
-<%= link_to 'Edit', edit_project_entry_path(@project_entry) %> |
-<%= link_to 'Back', project_entries_path %>
+<p>
+  <strong>Link:</strong>
+  <a href="<%= @project_entry.url %>"><%= @project_entry.url %></a>
+</p>
+
+<p>
+  <strong>Details:</strong>
+<% if @project_entry.info.present? %>
+   <pre><%= JSON.pretty_generate(@project_entry.info) %></pre>
+<% end %>
+</p>
+

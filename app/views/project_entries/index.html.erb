@@ -1,10 +1,15 @@
 <h1>Github project searcher</h1>
-<%= form_tag({action: 'search', format: :js }, { remote: true, method: :get, id: 'my-form' }) do %>
+<%= form_tag({action: 'search', format: :js}, remote: true, method: :get, data: {type: :js}  ) do %>
  <%= text_field_tag 'term', params[:term], placeholder: "Enter project_entry name" %>
  <%= submit_tag 'Search!' %>
 <% end %>
+
 <%= form_tag({action: 'clear_all', format: :js }, { remote: true, method: :delete, id: 'delete-form' }) do %>
  <%= submit_tag 'Clear saved projects' %>
+<% end %>
+
+<%= form_tag({action: 'default_search', format: :js }, { remote: true, method: :get, id: 'default-search-form' }) do %>
+ <%= submit_tag 'Retrive repositories of Ruby, Python, Javascript, Clojure and Go' %>
 <% end %>
 <h2>Results: </h2>
 <span id='about-search'> </span>
@@ -14,6 +19,7 @@
       <th>Language</th>
       <th>Project</th>
       <th>Popularity Score</th>
+      <th>Details</th>
     </tr>
   </thead>
 
@@ -27,8 +33,3 @@
   <tbody id="language-reference">
   </tbody>
 </table>
-<script>
-function errorHandling(language){
-  $('#about-search').text('No matches found for "' + language + '" or server unavailable')
-}
-</script>

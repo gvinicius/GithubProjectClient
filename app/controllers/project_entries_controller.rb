@@ -1,5 +1,7 @@
 class ProjectEntriesController < ApplicationController
   require 'net/http'
+  skip_before_action :verify_authenticity_token
+  protect_from_forgery except: :search
   before_action :set_project_entry, only: [:show, :edit, :update, :destroy]
 
   # GET /project_entries
@@ -15,25 +17,38 @@ class ProjectEntriesController < ApplicationController
 
   # GET /project_entries/1
   # GET /project_entries/1.json
-  def search
+  def search(language=params[:term])
     respond_to do |format|
-      @language = params[:term]
+      @language = language
       results = {}
-      source = "https://api.github.com/search/repositories?q=language:#{@language}&sort=stars&order=desc&page=1"
+      source = "https://api.github.com/search/repositories?q=language:#{@language}&sort=stars&order=desc&page=1&per_page=5"
       response = Net::HTTP.get_response(URI.parse(source))
-      if response.code == '200'
-        @project_entries = {@language => JSON.parse(response.body)['items'][0,5].map do |element|
+      new_language = ProjectEntry.where(name: @language.downcase.capitalize).empty?
+      if response.code == '200' && new_language
+        @project_entries = {@language => JSON.parse(response.body)['items'].map do |element|
               result = ProjectEntry.where(name: element['name'])&.first
-              result = ProjectEntry.create(element.slice('name', 'language', 'url', 'score')) if result.nil?
+              info_field = {info: element.except('name', 'language', 'url', 'score').to_json}
+              result = ProjectEntry.create(element.slice('name', 'language', 'url', 'score').merge(info_field)) if result.nil?
               result.save
               result
         end}
-        format.js{}
+        format.js{'index'}
+      elsif response.code == '200' && !new_language
+        @error = true
+        format.js { render :js => "alertOld('#{@language}');" }
       else
         @error = true
         format.js { render :js => "errorHandling('#{@language}');" }
       end
     end
+  end
+
+  # GET /project_entries/1
+  # GET /project_entries/1.json
+  def default_search
+      languages = %i[ruby python javascript clojure go]
+      results = {}
+      languages.each{ |language| search(language) }
   end
 
   def clear_all

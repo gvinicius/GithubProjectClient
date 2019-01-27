@@ -13,7 +13,15 @@
 
 ActiveRecord::Schema.define(version: 20190127052453) do
 
-# Could not dump table "project_entries" because of following StandardError
-#   Unknown type 'json' for column 'info'
+  create_table "project_entries", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "link",       limit: 255
+    t.string   "language",   limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "score",      limit: 255
+    t.text     "url",        limit: 65535
+    t.json     "info"
+  end
 
 end
