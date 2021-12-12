@@ -3,10 +3,13 @@
 source 'https://rubygems.org'
 
 
-gem 'puma', '~> 5.2'
+gem "puma", ">= 5.5.1"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '6.1'
+gem 'rails', '>= 6'
+gem "actionpack", ">= 6.1.4.1"
+gem "activerecord", ">= 6.1.2.1"
+
 # Use mysql as the database for Active Record
 gem 'mysql2'
 # Use SCSS for stylesheets
