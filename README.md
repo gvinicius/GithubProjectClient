@@ -1,19 +1,18 @@
 # GitHubProjectClient
 
-This is a simple Ruby app to fetch github projects by language and store it. Link: [GitHubProjectClient](https://githubprojectclient.herokuapp.com/)
+This is a simple Ruby app to fetch github projects by language and store it.
 
-* Ruby 2.3.1
-* Rails 4.2.10
-* MySQL 5.7.23
+* Ruby 3.1.0
+* Rails 6.1.4
+* MySQL
 * Minitest
-* Recommend using docker containers for MySQL in development
-* See `config/database.yml` to setup the database environment variables to development and test
 
 ## Running tests Locally
 ```
-rake db:create db:migrate RAILS_ENV=test
-```
-```
-rake test
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=1234 -d mysql
+docker start mysql
+
+bundle exec rails db:create db:migrate RAILS_ENV=test
+bundle exec rails test
 ```
 
