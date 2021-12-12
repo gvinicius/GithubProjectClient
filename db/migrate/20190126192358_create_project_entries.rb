@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CreateProjectEntries < ActiveRecord::Migration
+class CreateProjectEntries < ActiveRecord::Migration[4.2]
   def change
     create_table :project_entries do |t|
       t.string :name

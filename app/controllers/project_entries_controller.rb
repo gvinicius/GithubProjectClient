@@ -53,8 +53,8 @@ class ProjectEntriesController < ApplicationController
     response = Net::HTTP.get_response(URI.parse(source))
     new_language = ProjectEntry.where(name: language.downcase.capitalize).empty?
     if response.code == '200' && new_language
-      entries = JSON.parse(response.body)['items'].map { |element| ProjectEntry.upsert_from_github(element) }
-      return entries
+      JSON.parse(response.body)['items'].map { |element| ProjectEntry.upsert_from_github(element) }
+
     end
   end
 

@@ -20,12 +20,12 @@ class ProjectEntriesControllerTest < ActionController::TestCase
   end
 
   test 'show a entry correctly' do
-    get :show, id: @project_entry.id
+    get :show, params: { id: @project_entry.id }
     assert_response :success
   end
 
   test 'should do a search in github' do
-    get :search, term: 'ruby', format: 'js'
+    get :search, params: { term: 'ruby' }, format: 'js'
     assert_response :success
   end
 
