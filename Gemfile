@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 
-gem "puma", ">= 5.5.1"
+gem "puma", "~> 5.6.2 "
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '>= 6'
