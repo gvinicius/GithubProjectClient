@@ -8,6 +8,7 @@ gem "puma", "~> 5.6.2 "
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '>= 6.1.5.1'
 
+gem "nokogiri", ">= 1.13.4"
 # Use mysql as the database for Active Record
 gem 'mysql2'
 # Use SCSS for stylesheets
